@@ -124,7 +124,7 @@ HERE;
             $filter = array();
             $filter['Werking'] = $w->getId();
             $amount = Aanwezigheid::countAanwezigheden($filter);
-            $werkingen_footer .= "<th><a href='index.php?page=aanwezigheden&filter%5BWerking%5D=" . $w->getId() . "&filter%5BDatum%5D='>" . $amount . "</a>";
+            $werkingen_footer .= "<th><a href='index.php?page=aanwezigheden&filter%5BWerking%5D=" . $w->getId() . "&filter%5BDatum%5D=0" . $amount . "</a>";
             $sum += $amount;
         }
         $werkingen_footer .= "<th><a href='index.php?page=aanwezigheden'>$sum</tr>";

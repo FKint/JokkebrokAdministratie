@@ -4,6 +4,14 @@ class SpeelpleinDag
 {
     private $datum;
 
+/*    public function __construct($datum)
+    {
+        if ($datum == NULL) {
+            $datum = date('Y-m-d');
+        }
+        $this->datum = $datum;
+    }*/
+
     public function __construct($data)
     {
         if ($data == NULL) {
