@@ -13,7 +13,7 @@ class DashboardPage extends Page
         parent::__construct("Dashboard", "", "dashboard");
     }
 
-    private function printAanwezighedenContent()
+    private function printAanwezighedenVandaagContent()
     {
         $vandaag = new SpeelpleinDag();
         $werkingen = Werking::getWerkingen();
@@ -84,6 +84,71 @@ HERE;
         echo $content;
     }
 
+    private function printAanwezighedenZomerContent()
+    {
+        $werkingen = Werking::getWerkingen();
+        $werkingen_amount = count($werkingen);
+        $speelpleindagen = SpeelpleinDag::getSpeelpleindagen();
+        $werkingen_ths = "";
+        foreach ($werkingen as $w) {
+            $werkingen_ths .= "<th>" . $w->getOmschrijving() . "</th>";
+        }
+        $werkingen_datums_tbody = "";
+        $speelpleindag_index = 0;
+        foreach ($speelpleindagen as $e) {
+            $datum_str = "&filter%5BDatum%5D=" . $e->getDatum();
+            ++$speelpleindag_index;
+            $current_line = "<tr>";
+            if ($speelpleindag_index == 1) {
+                $current_line .= "<td rowspan=\"" . count($speelpleindagen) . "\">Datum</td>";
+            }
+            $current_line .= "<td>" . $e->getDatum() . "</td>";
+            foreach ($werkingen as $w) {
+                $filter = array();
+                $filter['Datum'] = $e->getDatumForDatabase();
+                $werking_id = $w->getId();
+                $filter['Werking'] = $werking_id;
+                $amount = Aanwezigheid::countAanwezigheden($filter);
+                $current_line .= "<td><a href='index.php?page=aanwezigheden&filter%5BWerking%5D=$werking_id$datum_str'>$amount</a></td>";
+            }
+            $filter = array();
+            $filter['Datum'] = $e->getDatumForDatabase();
+            $amount = Aanwezigheid::countAanwezigheden($filter);
+            $current_line .= "<td><a href='index.php?page=aanwezigheden$datum_str'>$amount</a></td>";
+            $current_line .= "</tr>";
+            $werkingen_datums_tbody .= $current_line;
+        }
+        $werkingen_footer = "<tr><th colspan='2'>Aanwezige kinderen";
+        $sum = 0;
+        foreach ($werkingen as $w) {
+            $filter = array();
+            $filter['Werking'] = $w->getId();
+            $amount = Aanwezigheid::countAanwezigheden($filter);
+            $werkingen_footer .= "<th><a href='index.php?page=aanwezigheden&filter%5BWerking%5D=" . $w->getId() . "&filter%5BDatum%5D='>" . $amount . "</a>";
+            $sum += $amount;
+        }
+        $werkingen_footer .= "<th><a href='index.php?page=aanwezigheden'>$sum</tr>";
+        $content = <<<HERE
+<table class="table table-bordered">
+<thead>
+	<tr>
+		<th colspan="2" rowspan="2">
+		<th colspan="$werkingen_amount" class="text-center">Werking
+		<th rowspan="2">Totaal
+	</tr>
+	<tr>
+		$werkingen_ths
+	</tr>
+</thead>
+<tbody>
+$werkingen_datums_tbody
+</tbody>
+$werkingen_footer
+</table>
+HERE;
+        echo $content;
+    }
+    
     public function printContent()
     {
         ?>
@@ -91,9 +156,18 @@ HERE;
         <div class="row">
             <div class="col-md-6">
                 <div class="panel panel-default">
-                    <div class="panel-heading"><strong>Aanwezigheden</strong></div>
+                    <div class="panel-heading"><strong>Aanwezigheden Vandaag</strong></div>
                     <div class="panel-body">
-                        <?php $this->printAanwezighedenContent(); ?>
+                        <?php $this->printAanwezighedenVandaagContent(); ?>
+                    </div>
+                </div>
+            </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><strong>Aanwezigheden Zomer</strong></div>
+                    <div class="panel-body">
+                        <?php $this->printAanwezighedenZomerContent(); ?>
                     </div>
                 </div>
             </div>
