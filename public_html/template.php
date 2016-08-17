@@ -155,6 +155,7 @@ if (!$this) {
 <script src="libs/bootstrap-modal/js/bootstrap-modalmanager.js"></script>
 <script src="libs/bootstrap-modal/js/bootstrap-modal.js"></script>
 <script>
+    $.fn.datepicker.defaults.weekStart = 1;
     $('#navbar li#<?php echo $this->getCurrentTab(); ?>').addClass('active');
 </script>
 </body>
