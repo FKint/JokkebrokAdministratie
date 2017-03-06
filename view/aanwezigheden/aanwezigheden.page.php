@@ -783,5 +783,3 @@ class AanwezighedenPage extends Page
     }
 
 }
-
-?>

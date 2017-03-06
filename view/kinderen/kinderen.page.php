@@ -1136,6 +1136,3 @@ class KinderenPage extends Page
 
     }
 }
-
-?>
-

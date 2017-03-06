@@ -35,5 +35,3 @@ Gebruikte technologieën (onvolledig, niet in een bepaalde volgorde):
 <?php
     }
 }
-
-?>
